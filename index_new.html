@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newcom Pro - Sistema de Torneos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans">
+
+    <!-- Header -->
+    <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center font-bold text-lg">N</div>
+                    <div>
+                        <h1 class="text-xl font-bold">Newcom Pro</h1>
+                        <p class="text-xs text-slate-400">Sistema de Torneos</p>
+                    </div>
+                </div>
+                <div class="text-right text-xs text-slate-400">
+                    <span id="timeDisplay"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <nav class="px-2 pb-2 flex gap-1 overflow-x-auto scrollbar-hide">
+            <button onclick="switchView('dashboard')" class="nav-tab active" data-view="dashboard">
+                <span>📊</span> <span class="hidden sm:inline">Dashboard</span>
+            </button>
+            <button onclick="switchView('equipos')" class="nav-tab" data-view="equipos">
+                <span>🏆</span> <span class="hidden sm:inline">Equipos</span>
+            </button>
+            <button onclick="switchView('jugadores')" class="nav-tab" data-view="jugadores">
+                <span>👥</span> <span class="hidden sm:inline">Jugadores</span>
+            </button>
+            <button onclick="switchView('torneos')" class="nav-tab" data-view="torneos">
+                <span>🎯</span> <span class="hidden sm:inline">Torneos</span>
+            </button>
+            <button onclick="switchView('partidos')" class="nav-tab" data-view="partidos">
+                <span>⚽</span> <span class="hidden sm:inline">Partidos</span>
+            </button>
+            <button onclick="switchView('tabla')" class="nav-tab" data-view="tabla">
+                <span>🏅</span> <span class="hidden sm:inline">Tabla</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        
+        <!-- DASHBOARD -->
+        <section id="dashboardView" class="view-section p-6 max-w-7xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold mb-2">Panel de Control</h2>
+                <p class="text-slate-400">Bienvenido a Newcom Pro</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-slate-400 text-sm">Equipos</p>
+                            <p id="statsTeams" class="text-3xl font-bold text-blue-400">0</p>
+                        </div>
+                        <div class="text-4xl opacity-20">🏆</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-slate-400 text-sm">Jugadores</p>
+                            <p id="statsPlayers" class="text-3xl font-bold text-cyan-400">0</p>
+                        </div>
+                        <div class="text-4xl opacity-20">👥</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-slate-400 text-sm">Torneos</p>
+                            <p id="statsTournaments" class="text-3xl font-bold text-purple-400">0</p>
+                        </div>
+                        <div class="text-4xl opacity-20">🎯</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-slate-400 text-sm">Partidos</p>
+                            <p id="statsMatches" class="text-3xl font-bold text-lime-400">0</p>
+                        </div>
+                        <div class="text-4xl opacity-20">⚽</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="openModal('teamModal')" class="action-button">
+                    <div class="text-2xl mb-2">➕</div>
+                    <div>Nuevo Equipo</div>
+                </button>
+                <button onclick="openModal('playerModal')" class="action-button">
+                    <div class="text-2xl mb-2">➕</div>
+                    <div>Nuevo Jugador</div>
+                </button>
+                <button onclick="openModal('tournamentModal')" class="action-button">
+                    <div class="text-2xl mb-2">➕</div>
+                    <div>Nuevo Torneo</div>
+                </button>
+                <button onclick="switchView('partidos')" class="action-button">
+                    <div class="text-2xl mb-2">📝</div>
+                    <div>Cargar Resultado</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- EQUIPOS -->
+        <section id="equiposView" class="view-section hidden p-6 max-w-7xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">Equipos</h2>
+                    <p class="text-slate-400 text-sm mt-1">Gestiona todos los equipos del sistema</p>
+                </div>
+                <button onclick="openModal('teamModal')" class="btn btn-primary">
+                    ➕ Nuevo Equipo
+                </button>
+            </div>
+            <div id="teamsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="text-center py-12 text-slate-400">Sin equipos aún</div>
+            </div>
+        </section>
+
+        <!-- JUGADORES -->
+        <section id="jugadoresView" class="view-section hidden p-6 max-w-7xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">Jugadores</h2>
+                    <p class="text-slate-400 text-sm mt-1">Gestiona los jugadores de todos los equipos</p>
+                </div>
+                <button onclick="openModal('playerModal')" class="btn btn-primary">
+                    ➕ Nuevo Jugador
+                </button>
+            </div>
+            <div id="playersList" class="space-y-3">
+                <div class="text-center py-12 text-slate-400">Sin jugadores aún</div>
+            </div>
+        </section>
+
+        <!-- TORNEOS -->
+        <section id="torneosView" class="view-section hidden p-6 max-w-7xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">Torneos</h2>
+                    <p class="text-slate-400 text-sm mt-1">Crea y gestiona los torneos</p>
+                </div>
+                <button onclick="openModal('tournamentModal')" class="btn btn-primary">
+                    ➕ Nuevo Torneo
+                </button>
+            </div>
+            <div id="tournamentsList" class="space-y-4">
+                <div class="text-center py-12 text-slate-400">Sin torneos aún</div>
+            </div>
+        </section>
+
+        <!-- PARTIDOS -->
+        <section id="partidosView" class="view-section hidden p-6 max-w-7xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold mb-1">Partidos</h2>
+                <p class="text-slate-400 text-sm">Carga y gestiona los resultados</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-slate-300 text-sm font-medium mb-3">Seleccionar Torneo</label>
+                <select id="tournamentSelect" onchange="loadMatches()" class="input-field">
+                    <option value="">Elige un torneo...</option>
+                </select>
+            </div>
+
+            <div id="matchesList" class="space-y-3">
+                <div class="text-center py-12 text-slate-400">Sin partidos para mostrar</div>
+            </div>
+        </section>
+
+        <!-- TABLA -->
+        <section id="tablaView" class="view-section hidden p-6 max-w-7xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold mb-1">Tabla de Posiciones</h2>
+                <p class="text-slate-400 text-sm">Posiciones actuales del torneo</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-slate-300 text-sm font-medium mb-3">Seleccionar Torneo</label>
+                <select id="standingsSelect" onchange="loadStandings()" class="input-field">
+                    <option value="">Elige un torneo...</option>
+                </select>
+            </div>
+
+            <div id="standingsContainer" class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+                <p class="text-center text-slate-400">Selecciona un torneo para ver la tabla</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODALS -->
+    <div id="modalOverlay" class="modal-overlay hidden" onclick="closeAllModals()"></div>
+
+    <!-- Team Modal -->
+    <div id="teamModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Crear Equipo</h3>
+                <button onclick="closeModal('teamModal')" class="text-slate-400 hover:text-slate-200 text-2xl transition-colors">×</button>
+            </div>
+            <form onsubmit="createTeam(event)" class="space-y-4">
+                <div>
+                    <label class="block text-slate-300 text-sm font-medium mb-2">Nombre del Equipo</label>
+                    <input type="text" id="teamName" required placeholder="Ej: Club Atlético Central" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm font-medium mb-2">Categoría</label>
+                    <select id="teamCategory" required class="input-field">
+                        <option value="">Seleccionar categoría</option>
+                        <option value="+40">+40 años</option>
+                        <option value="+50">+50 años</option>
+                        <option value="+60">+60 años</option>
+                        <option value="+68">+68 años</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button type="submit" class="flex-1 btn btn-primary">Crear Equipo</button>
+                    <button type="button" onclick="closeModal('teamModal')" class="flex-1 btn btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Player Modal -->
+    <div id="playerModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Crear Jugador</h3>
+                <button onclick="closeModal('playerModal')" class="text-slate-400 hover:text-slate-200 text-2xl transition-colors">×</button>
+            </div>
+            <form onsubmit="createPlayer(event)" class="space-y-4">
+                <div>
+                    <label class="block text-slate-300 text-sm font-medium mb-2">Nombre</label>
+                    <input type="text" id="playerName" required placeholder="Juan Pérez" class="input-field">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-slate-300 text-sm font-medium mb-2">Edad</label>
+                        <input type="number" id="playerAge" required placeholder="45" min="18" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 text-sm font-medium mb-2">Nº Camiseta</label>
+                        <input type="number" id="playerNumber" required placeholder="10" min="1" max="99" class="input-field">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm font-medium mb-2">Equipo</label>
+                    <select id="playerTeam" required class="input-field">
+                        <option value="">Seleccionar equipo</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button type="submit" class="flex-1 btn btn-primary">Crear Jugador</button>
+                    <button type="button" onclick="closeModal('playerModal')" class="flex-1 btn btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tournament Modal -->
+    <div id="tournamentModal" class="modal hidden">
+        <div class="modal-content max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Crear Torneo</h3>
+                <button onclick="closeModal('tournamentModal')" class="text-slate-400 hover:text-slate-200 text-2xl transition-colors">×</button>
+            </div>
+            <form onsubmit="createTournament(event)" class="space-y-4">
+                <div>
+                    <label class="block text-slate-300 text-sm font-medium mb-2">Nombre del Torneo</label>
+                    <input type="text" id="tournamentName" required placeholder="Ej: Torneo Senior 2024" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm font-medium mb-2">Tipo</label>
+                    <select id="tournamentType" required class="input-field">
+                        <option value="">Seleccionar tipo</option>
+                        <option value="roundRobin">Todos contra Todos</option>
+                        <option value="elimination">Eliminación Directa</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm font-medium mb-3">Selecciona Equipos (mín. 2)</label>
+                    <div id="tournamentTeams" class="space-y-2 bg-slate-800/50 rounded-lg p-4 max-h-40 overflow-y-auto"></div>
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button type="submit" class="flex-1 btn btn-primary">Crear Torneo</button>
+                    <button type="button" onclick="closeModal('tournamentModal')" class="flex-1 btn btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Match Modal -->
+    <div id="matchModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold" id="matchTitle">Cargador de Resultados</h3>
+                <button onclick="closeModal('matchModal')" class="text-slate-400 hover:text-slate-200 text-2xl transition-colors">×</button>
+            </div>
+            <form onsubmit="saveMatchResult(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 p-4 rounded-lg">
+                        <p id="teamAName" class="font-semibold mb-4">Equipo A</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-slate-400">Sets</label>
+                                <input type="number" id="setsA" min="0" max="3" value="0" class="input-field">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400">Puntos</label>
+                                <input type="number" id="pointsA" min="0" value="0" class="input-field">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/50 p-4 rounded-lg">
+                        <p id="teamBName" class="font-semibold mb-4">Equipo B</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-slate-400">Sets</label>
+                                <input type="number" id="setsB" min="0" max="3" value="0" class="input-field">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400">Puntos</label>
+                                <input type="number" id="pointsB" min="0" value="0" class="input-field">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-6">
+                    <button type="submit" class="flex-1 btn btn-primary">Guardar Resultado</button>
+                    <button type="button" onclick="closeModal('matchModal')" class="flex-1 btn btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/firebase.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
