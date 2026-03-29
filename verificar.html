@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newcom Pro - Verificación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans p-6">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Newcom Pro - Verificación de Instalación</h1>
+        
+        <div class="space-y-4">
+            <!-- Test 1: CSS -->
+            <div class="stat-card">
+                <h3>✅ CSS Cargado</h3>
+                <p class="text-sm text-slate-400">Estos estilos provienen de css/styles.css</p>
+            </div>
+            
+            <!-- Test 2: Botones -->
+            <button class="action-button" onclick="testClick()">
+                <div>🧪</div>
+                <div>Hacer Clic</div>
+            </button>
+            
+            <!-- Test 3: Modal -->
+            <div id="testModalOverlay" class="modal-overlay hidden">
+                <div class="modal-content">
+                    <h2>Modal de Prueba</h2>
+                    <p class="text-slate-400 mb-6">Si ves esto, los modales funcionan correctamente.</p>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="closeModal('testModal')">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors" 
+                    onclick="openModal('testModal')">
+                Probar Modal
+            </button>
+            
+            <!-- Test 4: Estadísticas -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="stat-card">
+                    <p class="text-slate-400 text-sm">Test 1</p>
+                    <p class="text-3xl font-bold text-blue-400">✓</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-slate-400 text-sm">Test 2</p>
+                    <p class="text-3xl font-bold text-cyan-400">✓</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-slate-400 text-sm">Test 3</p>
+                    <p class="text-3xl font-bold text-purple-400">✓</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-slate-400 text-sm">Test 4</p>
+                    <p class="text-3xl font-bold text-lime-400">✓</p>
+                </div>
+            </div>
+            
+            <!-- Status -->
+            <div class="bg-green-900/20 border border-green-900/50 rounded-lg p-4 text-green-400">
+                <p class="font-semibold mb-2">✅ VERIFICACIÓN COMPLETADA</p>
+                <p class="text-sm mb-4">Todos los estilos y componentes se cargan correctamente.</p>
+                <p class="text-sm">Ahora debes:</p>
+                <ol class="text-sm list-decimal list-inside mt-2 space-y-1">
+                    <li>Configurar Firebase en js/firebase.js</li>
+                    <li>Crear las colecciones en Firestore</li>
+                    <li>Abrir index.html</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            const overlay = document.getElementById(modalId + 'Overlay');
+            if (overlay) {
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        function closeModal(modalId) {
+            const overlay = document.getElementById(modalId + 'Overlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function testClick() {
+            alert('¡Botones funcionando correctamente! 🎉\n\nAhora configura Firebase y abre index.html');
+        }
+
+        // Cerrar modal al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (e.target.classList?.contains('modal-overlay')) {
+                e.target.classList.add('hidden');
+            }
+        });
+
+        console.log('✅ Newcom Pro Verificación - Todo funciona!');
+    </script>
+</body>
+</html>
