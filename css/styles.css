@@ -1,274 +1,275 @@
-/* ============================================
-   ESTILOS PERSONALIZADOS - NEWCOM PRO
-   ============================================ */
+/* ============================================================
+   NEWCOM PRO - MODERN PROFESSIONAL DESIGN
+   ============================================================ */
 
-/* Variables CSS */
-:root {
-    --primary: #3b82f6;
-    --primary-dark: #1e40af;
-    --secondary: #06b6d4;
-    --success: #10b981;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --bg-dark: #111827;
-    --bg-darker: #0f172a;
-    --border-color: #1f2937;
-}
-
-/* Reset y Base */
 * {
-    scrollbar-width: thin;
-    scrollbar-color: #374151 #1f2937;
+    box-sizing: border-box;
 }
 
-*::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
 
-*::-webkit-scrollbar-track {
-    background: #1f2937;
+::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-*::-webkit-scrollbar-thumb {
-    background: #374151;
-    border-radius: 4px;
+::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.5);
+    border-radius: 3px;
 }
 
-*::-webkit-scrollbar-thumb:hover {
-    background: #4b5563;
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.8);
 }
 
-/* Inputs */
-.input-field {
-    @apply w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all;
-}
-
-.input-field:hover {
-    border-color: #374151;
-}
-
-/* Botones */
-.btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-all transform hover:scale-105 active:scale-95;
-}
-
-.btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white;
-}
-
-.btn-danger {
-    @apply bg-red-600 hover:bg-red-700 text-white;
-}
-
-.btn-success {
-    @apply bg-green-600 hover:bg-green-700 text-white;
-}
-
-/* Navbar */
-.nav-btn {
-    @apply px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition-all;
-    position: relative;
-}
-
-.nav-btn.active {
-    @apply text-blue-400 bg-gray-800;
-}
-
-.nav-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #3b82f6, #06b6d4);
-    border-radius: 2px 2px 0 0;
-}
-
-/* Modales */
-.modal {
-    @apply fixed inset-0 flex items-center justify-center z-50;
-    animation: fadeIn 0.2s ease-out;
-}
-
-.modal.hidden {
-    @apply hidden;
-}
-
-.modal-content {
-    @apply bg-gray-900 border border-gray-800 rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl;
-    animation: slideUp 0.3s ease-out;
-}
-
-#modalOverlay {
-    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity;
-}
-
-/* Tarjetas */
-.card {
-    @apply bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-gray-700 transition-all;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
-}
-
-/* Views */
-.view-container {
-    animation: fadeIn 0.3s ease-out;
-}
-
-.view-container.hidden {
-    @apply hidden;
-}
-
-/* Status Badges */
-.badge {
-    @apply px-3 py-1 rounded-full text-sm font-semibold;
-}
-
-.badge-success {
-    @apply bg-green-900/30 text-green-400 border border-green-900/50;
-}
-
-.badge-pending {
-    @apply bg-yellow-900/30 text-yellow-400 border border-yellow-900/50;
-}
-
-.badge-played {
-    @apply bg-blue-900/30 text-blue-400 border border-blue-900/50;
-}
-
-.badge-category {
-    @apply bg-purple-900/30 text-purple-400 border border-purple-900/50;
-}
-
-/* Animaciones */
+/* ============ ANIMATIONS ============ */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes slideUp {
     from {
-        transform: translateY(20px);
         opacity: 0;
+        transform: translateY(20px);
     }
     to {
-        transform: translateY(0);
         opacity: 1;
+        transform: translateY(0);
     }
 }
 
 @keyframes slideIn {
     from {
-        transform: translateX(-20px);
         opacity: 0;
+        transform: translateX(-20px);
     }
     to {
-        transform: translateX(0);
         opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
 @keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
-}
-
-/* Loading spinner */
-.spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(59, 130, 246, 0.3);
-    border-top: 3px solid #3b82f6;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* Tablas */
-.table {
-    @apply w-full border-collapse;
+/* ============ COMPONENTS ============ */
+
+.nav-tab {
+    @apply px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center gap-2 cursor-pointer hover:bg-slate-800 text-slate-400;
 }
 
-.table thead {
-    @apply bg-gray-800 border-b border-gray-700;
+.nav-tab.active {
+    @apply text-blue-400 bg-gradient-to-r from-blue-500/10 to-transparent border-b-2 border-blue-400;
 }
 
-.table th {
-    @apply px-6 py-4 text-left text-sm font-semibold text-gray-300;
-}
-
-.table td {
-    @apply px-6 py-4 border-b border-gray-800 text-gray-200;
-}
-
-.table tbody tr:hover {
-    @apply bg-gray-900/50;
-}
-
-/* Gradientes personalizados */
-.gradient-primary {
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-}
-
-.gradient-success {
-    background: linear-gradient(135deg, #10b981, #059669);
-}
-
-.gradient-danger {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-}
-
-/* Efecto de vidrio */
-.glass {
-    background: rgba(31, 41, 55, 0.7);
+.stat-card {
+    @apply bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-xl p-4 hover:border-slate-600/50 transition-all;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(75, 85, 99, 0.2);
 }
 
-/* Responsive */
+.stat-card h3 {
+    @apply text-slate-400 text-sm font-medium mb-2;
+}
+
+.stat-card .value {
+    @apply text-3xl font-bold text-white;
+}
+
+.action-button {
+    @apply bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-blue-500/50 hover:bg-gradient-to-br hover:from-blue-900/30 hover:to-slate-900/50 transition-all duration-200 text-white;
+}
+
+.action-button:hover {
+    @apply shadow-lg shadow-blue-500/10;
+}
+
+.action-button div:first-child {
+    @apply text-2xl;
+}
+
+.team-card {
+    @apply bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-lg p-4 hover:border-slate-600/50 transition-all cursor-pointer;
+}
+
+.team-card h3 {
+    @apply font-semibold text-white mb-2;
+}
+
+.player-row {
+    @apply flex items-center justify-between p-3 bg-slate-800/30 rounded-lg border border-slate-700/30 hover:border-slate-600/50 transition-all;
+}
+
+.player-row .name {
+    @apply font-medium text-white;
+}
+
+.player-row .team {
+    @apply text-sm text-slate-400;
+}
+
+.tournament-card {
+    @apply bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-lg p-4 hover:border-slate-600/50 transition-all;
+}
+
+.match-card {
+    @apply bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-lg p-4 hover:border-slate-600/50 transition-all;
+}
+
+.badge {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-medium;
+}
+
+.badge-success {
+    @apply bg-green-500/20 text-green-300 border border-green-500/30;
+}
+
+.badge-pending {
+    @apply bg-yellow-500/20 text-yellow-300 border border-yellow-500/30;
+}
+
+.badge-info {
+    @apply bg-blue-500/20 text-blue-300 border border-blue-500/30;
+}
+
+/* ============ MODALS ============ */
+
+.modal-overlay {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-end md:items-center justify-center transition-opacity duration-200;
+}
+
+.modal-overlay.hidden {
+    @apply hidden;
+}
+
+.modal-content {
+    @apply bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-700/50 rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl;
+    animation: modalSlideUp 0.3s ease-out;
+}
+
+.modal-content h2 {
+    @apply text-2xl font-bold text-white mb-6;
+}
+
+.form-group {
+    @apply mb-4;
+}
+
+.form-group label {
+    @apply block text-sm font-medium text-slate-400 mb-2;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    @apply w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all;
+}
+
+.form-group textarea {
+    @apply resize-none;
+}
+
+.button-group {
+    @apply flex gap-2 mt-6;
+}
+
+.btn-primary {
+    @apply flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors cursor-pointer;
+}
+
+.btn-secondary {
+    @apply flex-1 bg-slate-700 hover:bg-slate-600 text-white font-medium py-2 rounded-lg transition-colors cursor-pointer;
+}
+
+/* ============ UTILITIES ============ */
+
+.hidden {
+    display: none;
+}
+
+.view-section {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.loading {
+    animation: spin 1s linear infinite;
+}
+
+.spinner {
+    @apply inline-block w-5 h-5 border-2 border-slate-500 border-t-blue-400 rounded-full;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ============ RESPONSIVE ============ */
+
 @media (max-width: 768px) {
-    .nav-btn {
-        @apply px-2 py-2 text-sm;
+    .stat-card .value {
+        @apply text-2xl;
     }
 
     .modal-content {
-        @apply w-[90%] p-6;
+        @apply rounded-t-2xl rounded-b-none w-full;
     }
 
-    .card {
-        @apply p-4;
+    .action-button {
+        @apply p-3;
+    }
+
+    .action-button div:first-child {
+        @apply text-xl;
+    }
+
+    .team-card,
+    .tournament-card,
+    .match-card {
+        @apply p-3;
+    }
+
+    .player-row {
+        @apply p-2;
     }
 }
 
-/* Smooth transitions */
-* {
-    transition: all 0.2s ease;
-}
+@media (max-width: 640px) {
+    .nav-tab {
+        @apply px-3 py-1 text-xs;
+    }
 
-/* Desactiva animaciones para usuarios que lo prefieren */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+    .nav-tab span {
+        @apply hidden;
+    }
+
+    .stat-card {
+        @apply p-3;
+    }
+
+    .stat-card .value {
+        @apply text-xl;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        @apply text-base;
     }
 }
