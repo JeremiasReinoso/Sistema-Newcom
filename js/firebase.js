@@ -1,10 +1,8 @@
-// ============================================
-// CONFIGURACIÓN FIREBASE
-// ============================================
+// ============================================================
+// NEWCOM PRO - FIREBASE CONFIGURATION (Firestore Only)
+// ============================================================
 
-// Reemplaza estos valores con tu configuración de Firebase
-// Obtén estos datos de tu proyecto en console.firebase.google.com
-
+// Replace with your Firebase config from console.firebase.google.com
 const firebaseConfig = {
     apiKey: "REEMPLAZAR_CON_TU_API_KEY",
     authDomain: "REEMPLAZAR_CON_TU_AUTH_DOMAIN",
@@ -14,179 +12,128 @@ const firebaseConfig = {
     appId: "REEMPLAZAR_CON_TU_APP_ID"
 };
 
-// Inicializar Firebase
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
-// Referencias a servicios
-const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ============================================
-// ESTRUCTURA DE COLECCIONES
-// ============================================
+// ============================================================
+// FIRESTORE COLLECTIONS SCHEMA
+// ============================================================
 
 /*
-Firestore Collections:
+teams/
+  - name: string
+  - category: string ("+40", "+50", "+60", "+68")
+  - createdAt: timestamp
 
-1. teams/
-   - id (auto)
-   - name (string)
-   - category (string: +40, +50, +60, +68)
-   - createdAt (timestamp)
-   - userId (string)
+players/
+  - name: string
+  - age: number
+  - shirtNumber: number
+  - teamId: string (reference to teams)
+  - createdAt: timestamp
 
-2. players/
-   - id (auto)
-   - name (string)
-   - age (number)
-   - shirtNumber (number)
-   - teamId (string - referencia a teams)
-   - createdAt (timestamp)
-   - userId (string)
+tournaments/
+  - name: string
+  - type: string ("roundRobin" | "elimination")
+  - teams: array[string] (team IDs)
+  - status: string ("draft" | "active" | "finished")
+  - createdAt: timestamp
 
-3. tournaments/
-   - id (auto)
-   - name (string)
-   - type (string: roundRobin, elimination)
-   - teams (array de IDs)
-   - status (string: draft, active, finished)
-   - createdAt (timestamp)
-   - userId (string)
-
-4. matches/
-   - id (auto)
-   - tournamentId (string)
-   - teamAId (string)
-   - teamBId (string)
-   - setsA (number)
-   - setsB (number)
-   - pointsA (number)
-   - pointsB (number)
-   - status (string: pending, played)
-   - createdAt (timestamp)
-   - userId (string)
+matches/
+  - tournamentId: string
+  - teamAId: string
+  - teamBId: string
+  - setsA: number
+  - setsB: number
+  - pointsA: number
+  - pointsB: number
+  - status: string ("pending" | "played")
+  - createdAt: timestamp
 */
 
-// ============================================
-// FUNCIONES AUXILIARES DE FIREBASE
-// ============================================
+// ============================================================
+// DATABASE FUNCTIONS
+// ============================================================
 
 /**
- * Obtiene el usuario actual
- */
-function getCurrentUser() {
-    return new Promise((resolve, reject) => {
-        const unsubscribe = auth.onAuthStateChanged(
-            user => {
-                unsubscribe();
-                resolve(user);
-            },
-            reject
-        );
-    });
-}
-
-/**
- * Crea un documento en Firestore
+ * Create a new document in Firestore
  */
 async function createDocument(collection, data) {
     try {
-        const user = await getCurrentUser();
-        if (!user) throw new Error('Usuario no autenticado');
-
         const docRef = await db.collection(collection).add({
             ...data,
-            userId: user.uid,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-
         return docRef.id;
     } catch (error) {
-        console.error(`Error creando documento en ${collection}:`, error);
+        console.error(`Error creating document in ${collection}:`, error);
         throw error;
     }
 }
 
 /**
- * Obtiene documentos de una colección
+ * Get all documents from a collection
  */
-async function getDocuments(collection, whereClause = null) {
+async function getDocuments(collection) {
     try {
-        const user = await getCurrentUser();
-        if (!user) throw new Error('Usuario no autenticado');
-
-        let query = db.collection(collection).where('userId', '==', user.uid);
-
-        if (whereClause) {
-            query = query.where(whereClause.field, whereClause.operator, whereClause.value);
-        }
-
-        const snapshot = await query.orderBy('createdAt', 'desc').get();
+        const snapshot = await db.collection(collection).orderBy('createdAt', 'desc').get();
         const documents = [];
-
         snapshot.forEach(doc => {
             documents.push({
                 id: doc.id,
                 ...doc.data()
             });
         });
-
         return documents;
     } catch (error) {
-        console.error(`Error obteniendo documentos de ${collection}:`, error);
+        console.error(`Error getting documents from ${collection}:`, error);
         throw error;
     }
 }
 
 /**
- * Obtiene un documento específico
+ * Get a specific document
  */
 async function getDocument(collection, docId) {
     try {
         const doc = await db.collection(collection).doc(docId).get();
-        if (doc.exists) {
-            return { id: doc.id, ...doc.data() };
-        }
-        return null;
+        return doc.exists ? { id: doc.id, ...doc.data() } : null;
     } catch (error) {
-        console.error(`Error obteniendo documento:`, error);
+        console.error(`Error getting document:`, error);
         throw error;
     }
 }
 
 /**
- * Actualiza un documento
+ * Update a document
  */
 async function updateDocument(collection, docId, data) {
     try {
         await db.collection(collection).doc(docId).update(data);
     } catch (error) {
-        console.error(`Error actualizando documento:`, error);
+        console.error(`Error updating document:`, error);
         throw error;
     }
 }
 
 /**
- * Elimina un documento
+ * Delete a document
  */
 async function deleteDocument(collection, docId) {
     try {
         await db.collection(collection).doc(docId).delete();
     } catch (error) {
-        console.error(`Error eliminando documento:`, error);
+        console.error(`Error deleting document:`, error);
         throw error;
     }
 }
 
 /**
- * Listening en tiempo real a una colección
+ * Real-time listener for a collection
  */
 function listenCollection(collection, callback) {
-    const user = auth.currentUser;
-    if (!user) return;
-
     return db.collection(collection)
-        .where('userId', '==', user.uid)
         .orderBy('createdAt', 'desc')
         .onSnapshot(snapshot => {
             const documents = [];
@@ -201,18 +148,13 @@ function listenCollection(collection, callback) {
 }
 
 /**
- * Buscador de documentos por campo
+ * Query documents by field
  */
 async function queryDocuments(collection, field, operator, value) {
     try {
-        const user = await getCurrentUser();
-        if (!user) throw new Error('Usuario no autenticado');
-
         const snapshot = await db.collection(collection)
-            .where('userId', '==', user.uid)
             .where(field, operator, value)
             .get();
-
         const documents = [];
         snapshot.forEach(doc => {
             documents.push({
@@ -220,10 +162,9 @@ async function queryDocuments(collection, field, operator, value) {
                 ...doc.data()
             });
         });
-
         return documents;
     } catch (error) {
-        console.error(`Error en query:`, error);
+        console.error(`Error querying:`, error);
         throw error;
     }
 }
