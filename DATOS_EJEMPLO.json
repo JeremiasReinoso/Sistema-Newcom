@@ -1,0 +1,115 @@
+{
+  "teams": [
+    {
+      "name": "Club Atlético Central",
+      "category": "+40"
+    },
+    {
+      "name": "River Sports",
+      "category": "+40"
+    },
+    {
+      "name": "Boca Juniors San Miguel",
+      "category": "+50"
+    },
+    {
+      "name": "Independiente Youth",
+      "category": "+50"
+    },
+    {
+      "name": "Racing Club Masters",
+      "category": "+60"
+    },
+    {
+      "name": "San Lorenzo Veteranos",
+      "category": "+60"
+    }
+  ],
+  "players": [
+    {
+      "name": "Juan Pérez García",
+      "age": 42,
+      "shirtNumber": 10,
+      "teamName": "Club Atlético Central"
+    },
+    {
+      "name": "Carlos López Martínez",
+      "age": 45,
+      "shirtNumber": 7,
+      "teamName": "Club Atlético Central"
+    },
+    {
+      "name": "Miguel Rodríguez",
+      "age": 41,
+      "shirtNumber": 12,
+      "teamName": "Club Atlético Central"
+    },
+    {
+      "name": "Fernando Gómez",
+      "age": 48,
+      "shirtNumber": 5,
+      "teamName": "River Sports"
+    },
+    {
+      "name": "Andrés Silva",
+      "age": 46,
+      "shirtNumber": 8,
+      "teamName": "River Sports"
+    },
+    {
+      "name": "Roberto Díaz",
+      "age": 43,
+      "shirtNumber": 11,
+      "teamName": "River Sports"
+    },
+    {
+      "name": "Diego Montenegro",
+      "age": 52,
+      "shirtNumber": 9,
+      "teamName": "Boca Juniors San Miguel"
+    },
+    {
+      "name": "Gustavo Flores",
+      "age": 54,
+      "shirtNumber": 4,
+      "teamName": "Boca Juniors San Miguel"
+    },
+    {
+      "name": "Sergio Medina",
+      "age": 51,
+      "shirtNumber": 6,
+      "teamName": "Boca Juniors San Miguel"
+    },
+    {
+      "name": "Raúl Ortiz",
+      "age": 55,
+      "shirtNumber": 3,
+      "teamName": "Independiente Youth"
+    },
+    {
+      "name": "Mariano Ruiz",
+      "age": 53,
+      "shirtNumber": 10,
+      "teamName": "Independiente Youth"
+    },
+    {
+      "name": "Pablo Sánchez",
+      "age": 50,
+      "shirtNumber": 2,
+      "teamName": "Independiente Youth"
+    }
+  ],
+  "tournaments": [
+    {
+      "name": "Torneo Senior +40 2024",
+      "type": "roundRobin",
+      "teams": ["Club Atlético Central", "River Sports"]
+    },
+    {
+      "name": "Torneo Veteranos +50",
+      "type": "roundRobin",
+      "teams": ["Boca Juniors San Miguel", "Independiente Youth"]
+    }
+  ],
+  "instructions": "Estos son datos de ejemplo para pruebas. Úsalos como referencia para entender la estructura de la aplicación."
+}
