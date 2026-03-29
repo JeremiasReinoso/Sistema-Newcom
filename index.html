@@ -6,299 +6,254 @@
     <title>Newcom Pro - Sistema de Torneos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-gray-950 text-gray-100">
-    <!-- Navbar -->
-    <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center gap-2">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">N</span>
+<body class="bg-slate-950 text-slate-100 font-sans">
+    <!-- Header -->
+    <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center font-bold text-lg">N</div>
+                    <div>
+                        <h1 class="text-xl font-bold">Newcom Pro</h1>
+                        <p class="text-xs text-slate-400">Sistema de Torneos</p>
                     </div>
-                    <span class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500">
-                        Newcom Pro
-                    </span>
                 </div>
-                <div class="flex gap-1">
-                    <button onclick="switchView('equipos')" class="nav-btn active" data-view="equipos">
-                        🏆 Equipos
-                    </button>
-                    <button onclick="switchView('jugadores')" class="nav-btn" data-view="jugadores">
-                        👥 Jugadores
-                    </button>
-                    <button onclick="switchView('torneos')" class="nav-btn" data-view="torneos">
-                        🎯 Torneos
-                    </button>
-                    <button onclick="switchView('partidos')" class="nav-btn" data-view="partidos">
-                        ⚡ Partidos
-                    </button>
-                </div>
-                <div class="flex items-center gap-4">
-                    <span id="userDisplay" class="text-gray-400 text-sm"></span>
-                    <button onclick="logout()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium">
-                        Salir
-                    </button>
+                <div class="text-right text-sm text-slate-400">
+                    <span id="timeDisplay">--:--</span>
                 </div>
             </div>
         </div>
-    </nav>
+        
+        <!-- Navigation Tabs -->
+        <nav class="px-2 pb-2 flex gap-1 overflow-x-auto">
+            <button onclick="switchView('dashboard')" class="nav-tab active">📊 Dashboard</button>
+            <button onclick="switchView('equipos')" class="nav-tab">🏆 Equipos</button>
+            <button onclick="switchView('jugadores')" class="nav-tab">👥 Jugadores</button>
+            <button onclick="switchView('torneos')" class="nav-tab">🎯 Torneos</button>
+            <button onclick="switchView('partidos')" class="nav-tab">⚽ Partidos</button>
+            <button onclick="switchView('tabla')" class="nav-tab">🏅 Tabla</button>
+        </nav>
+    </header>
 
     <!-- Main Content -->
-    <div class="min-h-screen">
-        <!-- Login View -->
-        <div id="loginView" class="view-container">
-            <div class="min-h-screen flex items-center justify-center p-4">
-                <div class="w-full max-w-md">
-                    <div class="bg-gray-900 rounded-2xl p-8 border border-gray-800 shadow-2xl">
-                        <div class="text-center mb-8">
-                            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                <span class="text-white font-bold text-3xl">N</span>
-                            </div>
-                            <h1 class="text-2xl font-bold text-white mb-2">Newcom Pro</h1>
-                            <p class="text-gray-400">Sistema profesional de torneos</p>
-                        </div>
+    <main class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- DASHBOARD View -->
+            <section id="dashboardView" class="view-section">
+                <h2 class="text-3xl font-bold mb-2">Panel de Control</h2>
+                <p class="text-slate-400 mb-8">Bienvenido a Newcom Pro</p>
 
-                        <form onsubmit="login(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Email</label>
-                                <input id="emailInput" type="email" required 
-                                    class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                                    placeholder="tu@email.com">
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Contraseña</label>
-                                <input id="passwordInput" type="password" required 
-                                    class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                                    placeholder="••••••••">
-                            </div>
-                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-lg transition-all transform hover:scale-105">
-                                Ingresar
-                            </button>
-                        </form>
-
-                        <div class="mt-6 pt-6 border-t border-gray-700">
-                            <p class="text-gray-400 text-sm mb-2">¿No tienes cuenta?</p>
-                            <button onclick="toggleAuthMode()" class="w-full py-3 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg transition-colors">
-                                Crear cuenta
-                            </button>
-                        </div>
-
-                        <div id="registerMode" style="display:none;" class="mt-6 pt-6 border-t border-gray-700">
-                            <form onsubmit="register(event)" class="space-y-4">
-                                <div>
-                                    <label class="block text-gray-300 text-sm font-medium mb-2">Nombre</label>
-                                    <input id="nameInput" type="text" 
-                                        class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                                        placeholder="Tu nombre">
-                                </div>
-                                <button type="submit" class="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-lg transition-all transform hover:scale-105">
-                                    Registrarse
-                                </button>
-                            </form>
-                        </div>
-
-                        <div id="authError" class="mt-4 p-3 bg-red-900/20 border border-red-900/50 rounded-lg text-red-400 text-sm" style="display:none;"></div>
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div class="stat-card">
+                        <p class="text-slate-400 text-sm">Equipos</p>
+                        <p id="statsTeams" class="text-3xl font-bold text-blue-400">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="text-slate-400 text-sm">Jugadores</p>
+                        <p id="statsPlayers" class="text-3xl font-bold text-cyan-400">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="text-slate-400 text-sm">Torneos</p>
+                        <p id="statsTournaments" class="text-3xl font-bold text-purple-400">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="text-slate-400 text-sm">Partidos</p>
+                        <p id="statsMatches" class="text-3xl font-bold text-lime-400">0</p>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Equipos View -->
-        <div id="equiposView" class="view-container hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="flex justify-between items-center mb-8">
+                <!-- Quick Actions -->
+                <h3 class="text-lg font-bold mb-4">Acciones Rápidas</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button onclick="openModal('teamModal')" class="action-button"><div>➕</div><div>Nuevo Equipo</div></button>
+                    <button onclick="openModal('playerModal')" class="action-button"><div>👤</div><div>Nuevo Jugador</div></button>
+                    <button onclick="openModal('tournamentModal')" class="action-button"><div>🎪</div><div>Nuevo Torneo</div></button>
+                    <button onclick="openModal('matchModal')" class="action-button"><div>📊</div><div>Cargar Resultado</div></button>
+                </div>
+            </section>
+
+            <!-- EQUIPOS View -->
+            <section id="equiposView" class="view-section hidden">
+                <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Gestión de Equipos</h2>
-                    <button onclick="openModal('teamModal')" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all transform hover:scale-105">
-                        + Nuevo Equipo
-                    </button>
+                    <button onclick="openModal('teamModal')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">+ Nuevo Equipo</button>
                 </div>
+                <div id="equiposList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </section>
 
-                <!-- Modal Genérico -->
-                <div id="teamModal" class="modal hidden">
-                    <div class="modal-content">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-2xl font-bold">Crear Equipo</h3>
-                            <button onclick="closeModal('teamModal')" class="text-gray-400 hover:text-white text-2xl">×</button>
-                        </div>
-                        <form onsubmit="createTeam(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Nombre del Equipo</label>
-                                <input type="text" id="teamName" required 
-                                    class="input-field"
-                                    placeholder="Ej: Club Atlético Central">
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Categoría</label>
-                                <select id="teamCategory" required class="input-field">
-                                    <option value="">Seleccionar categoría</option>
-                                    <option value="+40">+40 años</option>
-                                    <option value="+50">+50 años</option>
-                                    <option value="+60">+60 años</option>
-                                    <option value="+68">+68 años</option>
-                                </select>
-                            </div>
-                            <div class="flex gap-3 pt-4">
-                                <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all">
-                                    Crear
-                                </button>
-                                <button type="button" onclick="closeModal('teamModal')" class="flex-1 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all">
-                                    Cancelar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Teams Grid -->
-                <div id="teamsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Cargado dinámicamente -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Jugadores View -->
-        <div id="jugadoresView" class="view-container hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="flex justify-between items-center mb-8">
+            <!-- JUGADORES View -->
+            <section id="jugadoresView" class="view-section hidden">
+                <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Gestión de Jugadores</h2>
-                    <button onclick="openModal('playerModal')" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all transform hover:scale-105">
-                        + Nuevo Jugador
-                    </button>
+                    <button onclick="openModal('playerModal')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">+ Nuevo Jugador</button>
                 </div>
+                <div id="jugadoresList" class="space-y-3"></div>
+            </section>
 
-                <div id="playerModal" class="modal hidden">
-                    <div class="modal-content">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-2xl font-bold">Crear Jugador</h3>
-                            <button onclick="closeModal('playerModal')" class="text-gray-400 hover:text-white text-2xl">×</button>
-                        </div>
-                        <form onsubmit="createPlayer(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Nombre</label>
-                                <input type="text" id="playerName" required class="input-field" placeholder="Juan Pérez">
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Edad</label>
-                                <input type="number" id="playerAge" required class="input-field" placeholder="45" min="18">
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Número de Camiseta</label>
-                                <input type="number" id="playerNumber" required class="input-field" placeholder="10" min="1" max="99">
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Equipo</label>
-                                <select id="playerTeam" required class="input-field">
-                                    <option value="">Seleccionar equipo</option>
-                                </select>
-                            </div>
-                            <div class="flex gap-3 pt-4">
-                                <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all">
-                                    Crear
-                                </button>
-                                <button type="button" onclick="closeModal('playerModal')" class="flex-1 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all">
-                                    Cancelar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div id="playersList" class="space-y-4">
-                    <!-- Cargado dinámicamente -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Torneos View -->
-        <div id="torneosView" class="view-container hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="flex justify-between items-center mb-8">
+            <!-- TORNEOS View -->
+            <section id="torneosView" class="view-section hidden">
+                <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold">Gestión de Torneos</h2>
-                    <button onclick="openModal('tournamentModal')" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all transform hover:scale-105">
-                        + Nuevo Torneo
-                    </button>
+                    <button onclick="openModal('tournamentModal')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">+ Nuevo Torneo</button>
                 </div>
+                <div id="torneosList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </section>
 
-                <div id="tournamentModal" class="modal hidden">
-                    <div class="modal-content">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-2xl font-bold">Crear Torneo</h3>
-                            <button onclick="closeModal('tournamentModal')" class="text-gray-400 hover:text-white text-2xl">×</button>
-                        </div>
-                        <form onsubmit="createTournament(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Nombre del Torneo</label>
-                                <input type="text" id="tournamentName" required class="input-field" placeholder="Ej: Torneo Senior 2024">
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Tipo</label>
-                                <select id="tournamentType" required class="input-field">
-                                    <option value="">Seleccionar tipo</option>
-                                    <option value="roundRobin">Todos contra Todos</option>
-                                    <option value="elimination">Eliminación Directa</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-medium mb-2">Equipos</label>
-                                <div id="tournamentTeams" class="space-y-2 max-h-48 overflow-y-auto bg-gray-800 p-3 rounded-lg">
-                                    <!-- Cargado dinámicamente -->
-                                </div>
-                            </div>
-                            <div class="flex gap-3 pt-4">
-                                <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all">
-                                    Crear
-                                </button>
-                                <button type="button" onclick="closeModal('tournamentModal')" class="flex-1 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all">
-                                    Cancelar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+            <!-- PARTIDOS View -->
+            <section id="partidosView" class="view-section hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold">Gestión de Partidos</h2>
                 </div>
+                <div id="partidosList" class="space-y-3"></div>
+            </section>
 
-                <div id="tournamentsList" class="space-y-6">
-                    <!-- Cargado dinámicamente -->
-                </div>
-            </div>
+            <!-- TABLA View -->
+            <section id="tablaView" class="view-section hidden">
+                <h2 class="text-3xl font-bold mb-6">Tabla de Posiciones</h2>
+                <div id="tablaContent" class="bg-slate-800/30 rounded-lg border border-slate-700/50 p-6"></div>
+            </section>
+
         </div>
+    </main>
 
-        <!-- Partidos View -->
-        <div id="partidosView" class="view-container hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h2 class="text-3xl font-bold mb-8">Partidos y Tabla de Posiciones</h2>
+    <!-- ============ MODALS ============ -->
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Matches Column -->
-                    <div class="lg:col-span-2">
-                        <div class="bg-gray-900 rounded-xl border border-gray-800 p-6">
-                            <h3 class="text-xl font-semibold mb-6">Partidos</h3>
-                            <div id="matchesList" class="space-y-4">
-                                <!-- Cargado dinámicamente -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Standings Column -->
-                    <div class="lg:col-span-1">
-                        <div class="bg-gray-900 rounded-xl border border-gray-800 p-6 sticky top-24">
-                            <h3 class="text-xl font-semibold mb-6">Tabla de Posiciones</h3>
-                            <div id="standingsContainer">
-                                <p class="text-gray-500 text-center py-8">Selecciona un torneo para ver posiciones</p>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Team Modal -->
+    <div id="teamModalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Crear Equipo</h2>
+            <form onsubmit="createTeam(event)" class="space-y-4">
+                <div class="form-group">
+                    <label>Nombre del Equipo</label>
+                    <input type="text" id="teamName" required placeholder="Ej: Club Atlético Central" />
                 </div>
-            </div>
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="teamCategory" required>
+                        <option value="">Seleccionar categoría</option>
+                        <option value="+40">+40 años</option>
+                        <option value="+50">+50 años</option>
+                        <option value="+60">+60 años</option>
+                        <option value="+68">+68 años</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Crear Equipo</button>
+                    <button type="button" onclick="closeModal('teamModal')" class="btn-secondary">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Modal Overlay -->
-    <div id="modalOverlay" class="hidden" onclick="closeAllModals()"></div>
+    <!-- Player Modal -->
+    <div id="playerModalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Crear Jugador</h2>
+            <form onsubmit="createPlayer(event)" class="space-y-4">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="playerName" required placeholder="Juan Pérez" />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label>Edad</label>
+                        <input type="number" id="playerAge" required placeholder="45" min="18" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nº Camiseta</label>
+                        <input type="number" id="playerNumber" required placeholder="10" min="1" max="99" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Equipo</label>
+                    <select id="playerTeam" required>
+                        <option value="">Seleccionar equipo</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Crear Jugador</button>
+                    <button type="button" onclick="closeModal('playerModal')" class="btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <!-- Tournament Modal -->
+    <div id="tournamentModalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Crear Torneo</h2>
+            <form onsubmit="createTournament(event)" class="space-y-4">
+                <div class="form-group">
+                    <label>Nombre del Torneo</label>
+                    <input type="text" id="tournamentName" required placeholder="Ej: Torneo Senior 2024" />
+                </div>
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="tournamentType" required>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="roundRobin">Todos contra Todos</option>
+                        <option value="elimination">Eliminación Directa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Selecciona Equipos (mín. 2)</label>
+                    <div id="tournamentTeamsList" class="space-y-2 bg-slate-800/50 rounded-lg p-3 max-h-40 overflow-y-auto"></div>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Crear Torneo</button>
+                    <button type="button" onclick="closeModal('tournamentModal')" class="btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Match Modal -->
+    <div id="matchModalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Cargar Resultado</h2>
+            <form onsubmit="saveMatchResult(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 p-3 rounded-lg">
+                        <p id="matchTeamA" class="font-semibold mb-3">Equipo A</p>
+                        <div class="space-y-2">
+                            <div class="form-group m-0">
+                                <label>Sets</label>
+                                <input type="number" id="setsA" min="0" max="3" value="0" />
+                            </div>
+                            <div class="form-group m-0">
+                                <label>Puntos</label>
+                                <input type="number" id="pointsA" min="0" value="0" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800/50 p-3 rounded-lg">
+                        <p id="matchTeamB" class="font-semibold mb-3">Equipo B</p>
+                        <div class="space-y-2">
+                            <div class="form-group m-0">
+                                <label>Sets</label>
+                                <input type="number" id="setsB" min="0" max="3" value="0" />
+                            </div>
+                            <div class="form-group m-0">
+                                <label>Puntos</label>
+                                <input type="number" id="pointsB" min="0" value="0" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Guardar Resultado</button>
+                    <button type="button" onclick="closeModal('matchModal')" class="btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="js/firebase.js"></script>
     <script src="js/app.js"></script>
 </body>
